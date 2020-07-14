@@ -1,13 +1,136 @@
 ---
 title: "Reproducible Research course project 1"
-author: "Justin"
+author: "Justin Chan"
 date: "7/14/2020"
 output:
-  html_document: default
   pdf_document: default
+  html_document: default
 ---
 
-Loading the data
+Loading the data and exploring the basics
 ```{r, echo=TRUE}
-read.csv("activity.csv")
+setwd("/Users/connect/Documents/GitHub/RepData_PeerAssessment1")
+activity <- read.csv("activity.csv")
+library(lubridate)
+activity$date<-ymd(activity$date)
 ```
+
+Question 2: histogram of total number of steps each day 
+```{r, echo=TRUE}
+steptot <- data.frame(tapply(activity$steps, activity$date, sum, na.rm=TRUE))
+steptot$date <- rownames(steptot)
+rownames(steptot) <- NULL
+names(steptot)[[1]] <- "total"
+png("hist.png")
+hist(steptot$total,
+     main = "Total number of steps per day",
+     xlab = "Total number of steps per day",
+     col = "darkblue")
+dev.off()
+```
+
+Mean of total number of steps per day 
+```{r, echo = TRUE}
+mean(steptot$total)
+```
+
+Median of total number of steps per day 
+```{r, echo = TRUE}
+mean(steptot$total)
+```
+
+Question 3: Average daily activity pattern 
+```{r, echo = TRUE}
+stepavg <- aggregate(activity$steps, by=list(activity$interval),
+                     FUN=mean, na.rm=TRUE)
+names(stepavg) <- c("interval", "mean")
+png("daily.png")
+plot(stepavg$interval, stepavg$mean, 
+     type = "l", col="darkblue", 
+     lwd = 2,
+     xlab="Interval", 
+     ylab="Average number of steps", 
+     main="Average number of steps per intervals")
+dev.off()
+```
+
+Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
+```{r, echo = TRUE}
+stepavg[which.max(stepavg$mean), ]$interval
+```
+
+How to impute missing values?
+Calculate and report the total number of missing values in the dataset 
+```{r, echo = TRUE}
+sum(is.na(activity$steps))
+```
+
+Devise a strategy for filling in all of the missing values in the dataset.
+```{r, echo = TRUE}
+missing <- stepavg$mean[match(activity$interval, stepavg$interval)]
+```
+
+Create new dataset with missing values filled in 
+```{r, echo = TRUE}
+nactivity <- transform(activity, 
+                       steps = ifelse(is.na(activity$steps),
+                                             yes = missing,
+                                             no = activity$steps))
+ntotalstep <- aggregate(steps ~ date,
+                        nactivity,
+                        sum)
+names(ntotalstep) <- c("date","dailystep")
+```
+
+New histogram 
+```{r, echo = TRUE}
+png("newhist.png")
+hist(ntotalstep$dailystep,
+     main = "Total number of steps per day",
+     xlab = "Total number of steps per day",
+     col = "darkblue")
+dev.off()
+```
+
+Mean of total number of steps per day
+```{r, echo=TRUE}
+mean(ntotalstep$dailystep)
+```
+
+Median of total number of steps per day
+```{r, echo=TRUE}
+median(ntotalstep$dailystep)
+```
+
+Difference in activity pattern between weekday and weekend 
+Create a new factor variable in the dataset with two levels – “weekday” and “weekend” indicating whether a given date is a weekday or weekend day.
+```{r, echo=TRUE}
+activity$date <- as.Date(strptime(activity$date, format="%Y-%m-%d"))
+activity$day <- sapply(activity$date, function(x) {
+  if (weekdays(x) == "Sunday" | weekdays(x) == "Saturday")
+  {y <- "Weekend"} else
+  {y <- "Weekday"}
+  y
+})
+```
+
+New panel plot of weekday vs weekend 
+```{r, echo=TRUE}
+activityday <- aggregate(steps ~ interval + day,
+                         activity,
+                         FUN=mean,
+                         na.rm = TRUE)
+activityday
+library(ggplot2)
+ggplot(activityday, aes(x = interval, y = steps, color = day)) +
+  geom_line() +
+  labs(title = "Average daily steps by weekday/weekend", 
+       x = "Interval", 
+       y = "Average number of steps") +
+  facet_wrap(~day, ncol = 1, nrow=2)
+ggsave("weekday.png")
+```
+
+
+
+
