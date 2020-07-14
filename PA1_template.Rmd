@@ -1,25 +1,13 @@
 ---
-title: "Reproducible Research: Peer Assessment 1"
-output: 
-  html_document:
-    keep_md: true
+title: "Reproducible Research course project 1"
+author: "Justin"
+date: "7/14/2020"
+output:
+  html_document: default
+  pdf_document: default
 ---
 
-
-## Loading and preprocessing the data
-
-
-
-## What is mean total number of steps taken per day?
-
-
-
-## What is the average daily activity pattern?
-
-
-
-## Imputing missing values
-
-
-
-## Are there differences in activity patterns between weekdays and weekends?
+Loading the data
+```{r, echo=TRUE}
+read.csv("activity.csv")
+```
