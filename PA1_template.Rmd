@@ -21,12 +21,10 @@ steptot <- data.frame(tapply(activity$steps, activity$date, sum, na.rm=TRUE))
 steptot$date <- rownames(steptot)
 rownames(steptot) <- NULL
 names(steptot)[[1]] <- "total"
-png("hist.png")
 hist(steptot$total,
      main = "Total number of steps per day",
      xlab = "Total number of steps per day",
      col = "darkblue")
-dev.off()
 ```
 
 Mean of total number of steps per day 
@@ -44,14 +42,12 @@ Question 3: Average daily activity pattern
 stepavg <- aggregate(activity$steps, by=list(activity$interval),
                      FUN=mean, na.rm=TRUE)
 names(stepavg) <- c("interval", "mean")
-png("daily.png")
 plot(stepavg$interval, stepavg$mean, 
      type = "l", col="darkblue", 
      lwd = 2,
      xlab="Interval", 
      ylab="Average number of steps", 
      main="Average number of steps per intervals")
-dev.off()
 ```
 
 Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
@@ -84,12 +80,10 @@ names(ntotalstep) <- c("date","dailystep")
 
 New histogram 
 ```{r, echo = TRUE}
-png("newhist.png")
 hist(ntotalstep$dailystep,
      main = "Total number of steps per day",
      xlab = "Total number of steps per day",
      col = "darkblue")
-dev.off()
 ```
 
 Mean of total number of steps per day
