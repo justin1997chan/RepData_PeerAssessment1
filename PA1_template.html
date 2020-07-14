@@ -187,13 +187,8 @@ summary {
 <p>Loading the data and exploring the basics</p>
 <pre class="r"><code>setwd(&quot;/Users/connect/Documents/GitHub/RepData_PeerAssessment1&quot;)
 activity &lt;- read.csv(&quot;activity.csv&quot;)
-library(lubridate)</code></pre>
-<pre><code>## 
-## Attaching package: 'lubridate'</code></pre>
-<pre><code>## The following object is masked from 'package:base':
-## 
-##     date</code></pre>
-<pre class="r"><code>activity$date&lt;-ymd(activity$date)</code></pre>
+library(lubridate)
+activity$date&lt;-ymd(activity$date)</code></pre>
 <p>Question 2: histogram of total number of steps each day</p>
 <pre class="r"><code>steptot &lt;- data.frame(tapply(activity$steps, activity$date, sum, na.rm=TRUE))
 steptot$date &lt;- rownames(steptot)
