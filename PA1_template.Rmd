@@ -3,8 +3,8 @@ title: "Reproducible Research course project 1"
 author: "Justin Chan"
 date: "7/14/2020"
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 ---
 
 Loading the data and exploring the basics
@@ -120,7 +120,6 @@ activityday <- aggregate(steps ~ interval + day,
                          activity,
                          FUN=mean,
                          na.rm = TRUE)
-activityday
 library(ggplot2)
 ggplot(activityday, aes(x = interval, y = steps, color = day)) +
   geom_line() +
